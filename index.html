@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <textarea id="inputArea" cols="100" rows="50"></textarea>
+    <textarea id="outputArea" cols="100" rows="50"></textarea>
+    <br>
+    <label for="inputName" style="margin-bottom: 10px;">請輸入Interface名稱:</label>
+    <input type="text" id="inputName">
+    <br>
+    <button style="width:100px;height:50px;font-size:20px;" width='300' id="transBtn">轉換</button>
+</body>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js' integrity='sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==' crossorigin='anonymous'></script>
+
+<script>
+    $('#transBtn').on('click', function() {
+        convertDataToInterface($('#inputArea').val())
+    })
+    var IAllTextArray = []
+    var ITextName = ''
+
+    function convertDataToInterface(str) {
+        let dataObj = JSON.parse(str)
+        IAllTextArray = []
+        ITextName = $('#inputName').val() ? $('#inputName').val() : 'NewInterface'
+        getInterface(ITextName, dataObj)
+        $('#outputArea').val(getAllText())
+    }
+
+    function getInterface(name, obj) {
+        let IText = 'interface ' + 'I' + name + '{\n'
+        $.each(obj, function(index, value) {
+            switch (typeof(value)) {
+                case 'object':
+                    if (value === null) {
+                        IText += '\t' + index + ':' + 'null' + ';\n'
+                    } else {
+                        if (isArray(value)) {
+                            IText += '\t' + index + ':' + getArrayType(index, value) + ';\n'
+                        } else {
+                            IText += '\t' + index + ':' + getInterface(index, value) + ';\n'
+                        }
+                    }
+                    break;
+                default:
+                    IText += '\t' + index + ':' + String(typeof(value)) + ';\n'
+                    break;
+            }
+        });
+        IText += '}\n\n'
+        IAllTextArray.push(IText)
+        return 'I' + name
+    }
+
+    function getArrayType(index, value) {
+        let valueTxt = '['
+        if (value.length > 0) {
+            switch (typeof(value[0])) {
+                case 'object':
+                    if (isArray(value[0])) {
+                        valueTxt += getArrayType(index, value[0])
+                    } else {
+                        valueTxt += getInterface(index, value[0])
+                    }
+                    break;
+                default:
+                    valueTxt += typeof(value[0])
+                    break;
+            }
+        }
+        return valueTxt + ']'
+
+    }
+
+    function isArray(obj) {
+        return Object.prototype.toString.call(obj) === '[object Array]';
+    }
+
+    function getAllText() {
+        let allText = ''
+        for (let i = IAllTextArray.length - 1; i >= 0; i--) {
+            allText += IAllTextArray[i]
+        }
+        allText += '\nexport default I' + ITextName
+        return allText;
+    }
+</script>
+
+</html>
