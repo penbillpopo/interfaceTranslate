@@ -1,0 +1,51 @@
+@import "./reset";
+
+.container{
+    padding: 30px 10px;
+    .submitBox{
+        display: flex;
+        align-items: flex-end;
+        margin-bottom: 20px;
+        .inputBox{
+            display: flex;
+            flex-direction: column;
+            margin-right: 5px;
+            label{
+                margin-bottom: 10px;
+            }
+            input{
+                border:1px solid #00000060;
+                width: 300px;
+                height: 30px;
+                border-radius: 5px;
+                font-size: 18px;
+            }
+            button{
+                width: 100px;
+                height: 30px;
+                border-radius: 5px;
+                background-color: #0066CC;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #ffffff;
+                transition: opacity 0.3s ease;
+                &:hover{
+                    opacity: 0.8;
+                }
+            }
+        }
+    }
+    .transformBox{
+        display: flex;
+        .name{
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        textarea{
+            border:1px solid #00000060;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+    }
+}
